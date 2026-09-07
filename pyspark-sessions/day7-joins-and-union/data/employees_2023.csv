@@ -1,0 +1,6 @@
+emp_id,emp_name,dept_id,city,salary,join_date
+E01,Amit Sharma,D01,Mumbai,80000,2021-03-15
+E02,Priya Patel,D02,Delhi,68000,2020-07-01
+E03,Ravi Kumar,D03,Bangalore,90000,2019-11-20
+E15,Sunita Verma,D04,Pune,62000,2022-08-10
+E16,Manish Tiwari,D05,Chennai,71000,2021-12-01

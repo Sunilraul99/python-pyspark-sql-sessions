@@ -1,0 +1,8 @@
+dept_id,dept_name,manager,budget
+D01,Engineering,Amit Sharma,5000000
+D02,Marketing,Priya Patel,2000000
+D03,Data Science,Ravi Kumar,3500000
+D04,HR,Sneha Joshi,1500000
+D05,Finance,Arjun Nair,4000000
+D07,Legal,Pooja Verma,1200000
+D08,Operations,Suresh Babu,2800000

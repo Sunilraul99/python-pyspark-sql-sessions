@@ -1,0 +1,13 @@
+emp_id,emp_name,dept_id,city,salary,join_date
+E01,Amit Sharma,D01,Mumbai,85000,2021-03-15
+E02,Priya Patel,D02,Delhi,72000,2020-07-01
+E03,Ravi Kumar,D03,Bangalore,95000,2019-11-20
+E04,Sneha Joshi,D01,Mumbai,68000,2022-01-10
+E05,Karan Mehta,D04,Pune,78000,2021-09-05
+E06,Divya Singh,D02,Delhi,82000,2020-04-18
+E07,Arjun Nair,D05,Chennai,91000,2018-06-30
+E08,Meera Reddy,D03,Bangalore,74000,2022-05-22
+E09,Rohit Gupta,D06,Hyderabad,67000,2023-02-14
+E10,Anjali Das,D01,Mumbai,88000,2019-08-09
+E11,Vikas Rao,D99,Kolkata,55000,2023-07-01
+E12,Neha Kapoor,NULL,Jaipur,61000,2022-11-30
