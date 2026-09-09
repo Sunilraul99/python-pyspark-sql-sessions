@@ -1,0 +1,9 @@
+project_id,project_name,lead_emp_id,dept_code,budget,status
+P01,Data Platform,E03,DC03,800000,active
+P02,CRM Upgrade,E02,DC02,350000,active
+P03,Payroll Automation,E05,DC04,200000,completed
+P04,Risk Dashboard,E07,DC05,600000,active
+P05,Recruitment Portal,E05,DC04,150000,active
+P06,Marketing Analytics,E02,DC02,250000,completed
+P07,ML Pipeline,E03,DC03,950000,active
+P08,Cost Optimizer,E07,DC05,400000,active

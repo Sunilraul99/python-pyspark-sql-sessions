@@ -1,0 +1,11 @@
+emp_id,emp_name,dept_code,location_id,salary,manager_id
+E01,Amit Sharma,DC01,L01,85000,E07
+E02,Priya Patel,DC02,L02,72000,E08
+E03,Ravi Kumar,DC03,L01,95000,E07
+E04,Sneha Joshi,DC01,L03,68000,E07
+E05,Karan Mehta,DC04,L02,78000,E08
+E06,Divya Singh,DC02,L04,82000,E08
+E07,Arjun Nair,DC05,L01,110000,NULL
+E08,Meera Reddy,DC03,L02,105000,NULL
+E09,Rohit Gupta,DC06,L03,67000,E07
+E10,Anjali Das,DC01,L04,88000,E07

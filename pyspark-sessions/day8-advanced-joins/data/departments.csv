@@ -1,0 +1,8 @@
+department_id,department_name,head_count,annual_budget
+DC01,Engineering,3,5000000
+DC02,Marketing,2,2000000
+DC03,Data Science,2,3500000
+DC04,HR,1,1500000
+DC05,Finance,1,4000000
+DC07,Legal,0,1200000
+DC08,Operations,0,2800000
