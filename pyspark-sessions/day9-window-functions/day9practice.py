@@ -6,7 +6,7 @@ Topics:
   - Frame boundaries: UNBOUNDED PRECEDING, CURRENT ROW, UNBOUNDED FOLLOWING, N PRECEDING/FOLLOWING
 
   Ranking functions:
-    row_number, rank, dense_rank, ntile, percent_rank, cume_dist
+    row_number, rank, dense_rank
 
   Analytic / navigation functions:
     lag, lead, first, last
@@ -105,8 +105,7 @@ df.show(36, truncate=False)
 
 from pyspark.sql.window import Window
 from pyspark.sql.functions import (
-    row_number, rank, dense_rank, ntile,
-    percent_rank, cume_dist,
+    row_number, rank, dense_rank,
     lag, lead,
     first, last,
     sum as wsum, avg as wavg,
@@ -260,7 +259,6 @@ print("    Use rowsBetween for most cases. rangeBetween for value-based logic.")
 # row_number() -> 1, 2, 3 ... always unique, no ties
 # rank()       -> 1, 1, 3 ... ties get same rank, next rank skips
 # dense_rank() -> 1, 1, 2 ... ties get same rank, next rank does NOT skip
-# ntile(n)     -> divides partition into n equal buckets (1..n)
 
 print("\n" + "=" * 70)
 print("SECTION 3 - Ranking Functions")
@@ -301,33 +299,6 @@ df.withColumn("rnk", rank().over(w_rank)) \
   .orderBy("region", "rnk") \
   .show(truncate=False)
 
-# ------ 3D: ntile — divide partition into equal buckets ------
-print("\n--- 3D: ntile(3) — divide each region's sales into 3 equal tiers ---")
-# ntile(3) -> bucket 1 = top third, 2 = middle, 3 = bottom third
-w_ntile = Window.partitionBy("region").orderBy(col("amount").desc())
-df.withColumn("tier", ntile(3).over(w_ntile)) \
-  .select("region", "sale_id", "salesperson", "amount", "tier") \
-  .orderBy("region", "tier", col("amount").desc()) \
-  .show(36, truncate=False)
-
-# ------ 3E: percent_rank ------
-print("\n--- 3E: percent_rank — relative rank as percentage (0.0 to 1.0) ---")
-# percent_rank = (rank - 1) / (total rows in partition - 1)
-# First row = 0.0, last row = 1.0
-w_pct = Window.partitionBy("region").orderBy("amount")
-df.withColumn("pct_rank", spark_round(percent_rank().over(w_pct), 3)) \
-  .select("region", "sale_id", "amount", "pct_rank") \
-  .orderBy("region", "amount") \
-  .show(20, truncate=False)
-
-# ------ 3F: cume_dist ------
-print("\n--- 3F: cume_dist — cumulative distribution (fraction of rows <= current) ---")
-# cume_dist = number of rows with value <= current / total rows in partition
-# Always > 0, last row = 1.0
-df.withColumn("cume_dist", spark_round(cume_dist().over(w_pct), 3)) \
-  .select("region", "sale_id", "amount", "cume_dist") \
-  .orderBy("region", "amount") \
-  .show(20, truncate=False)
 
 
 # =============================================================
@@ -661,7 +632,7 @@ df.withColumn("sp_avg", spark_round(wavg("amount").over(w_sp_avg), 0)) \
 #
 # from pyspark.sql.functions import (
 #     # Ranking
-#     row_number, rank, dense_rank, ntile, percent_rank, cume_dist,
+#     row_number, rank, dense_rank,
 #     # Navigation
 #     lag, lead, first, last,
 #     # Aggregates (as window functions)

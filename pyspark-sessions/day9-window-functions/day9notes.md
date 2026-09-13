@@ -109,7 +109,7 @@ All ranking functions require `orderBy` in the window spec. No frame needed.
 
 ### Import
 ```python
-from pyspark.sql.functions import row_number, rank, dense_rank, ntile, percent_rank, cume_dist
+from pyspark.sql.functions import row_number, rank, dense_rank
 ```
 
 ### row_number
@@ -143,24 +143,6 @@ df.withColumn("drnk", dense_rank().over(w))
 | 84000 | 3 | 2 | 2 |
 | 62000 | 4 | 4 | 3 |
 
-### ntile(n) — equal-sized buckets
-```python
-df.withColumn("tier", ntile(3).over(w))
-```
-Divides the partition into `n` equal groups. Returns bucket number 1..n.  
-Top third = 1, middle = 2, bottom = 3 (when ordered desc).
-
-### percent_rank — relative position as 0.0–1.0
-```python
-df.withColumn("pct", percent_rank().over(w))
-```
-Formula: `(rank - 1) / (total rows - 1)`. First row = 0.0, last row = 1.0.
-
-### cume_dist — cumulative distribution
-```python
-df.withColumn("cd", cume_dist().over(w))
-```
-Fraction of rows with value ≤ current row's value. Always > 0, last row = 1.0.
 
 ### Top-N per group pattern
 ```python
@@ -349,7 +331,7 @@ df.withColumn("sp_avg", avg("amount").over(w_avg)) \
 
 | Category | Functions | Needs orderBy | Needs frame |
 |---|---|---|---|
-| Ranking | `row_number, rank, dense_rank, ntile, percent_rank, cume_dist` | Yes | No |
+| Ranking | `row_number, rank, dense_rank` | Yes | No |
 | Navigation | `lag, lead, first, last` | Yes (lag/lead) | Optional |
 | Aggregate | `sum, avg, min, max, count` | Optional | Yes (for running/rolling) |
 
