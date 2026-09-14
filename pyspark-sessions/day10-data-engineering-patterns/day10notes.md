@@ -8,8 +8,9 @@
 3. [SCD Type 2 — Full History](#3-scd-type-2--full-history)
 4. [Soft Delete](#4-soft-delete)
 5. [Deduplication — Keep Latest](#5-deduplication--keep-latest)
-6. [Pattern Comparison](#6-pattern-comparison)
-7. [Quick Reference](#7-quick-reference)
+6. [Delta Lake MERGE](#6-delta-lake-merge)
+7. [Pattern Comparison](#7-pattern-comparison)
+8. [Quick Reference](#8-quick-reference)
 
 ---
 
@@ -304,7 +305,155 @@ Equivalent to Strategy 1 but uses groupBy instead of a window.
 
 ---
 
-## 6. Pattern Comparison
+## 6. Delta Lake MERGE
+
+### What is Delta Lake
+Delta Lake is an open-source storage layer that adds **ACID transactions** to data lakes (S3, ADLS, GCS, HDFS). It stores data as Parquet files plus a `_delta_log/` transaction log.
+
+`DeltaTable.merge()` is the production-grade way to do upserts — atomic, concurrent-safe, and efficient.
+
+### Setup
+
+```python
+# Install
+# pip install delta-spark
+
+from delta import configure_spark_with_delta_pip
+
+spark = configure_spark_with_delta_pip(
+    SparkSession.builder
+        .appName("DeltaMerge")
+        .master("local[*]")
+        .config("spark.sql.extensions",
+                "io.delta.sql.DeltaSparkSessionExtension")
+        .config("spark.sql.catalog.spark_catalog",
+                "org.apache.spark.sql.delta.catalog.DeltaCatalog")
+).getOrCreate()
+```
+
+### Load a Delta table
+
+```python
+from delta.tables import DeltaTable
+
+# By path
+target = DeltaTable.forPath(spark, "/path/to/employees_delta")
+
+# By catalog name (if registered)
+target = DeltaTable.forName(spark, "my_db.employees")
+```
+
+### Pattern 1 — Basic UPSERT (insert new, update existing)
+
+```python
+source = spark.read.csv("employees_incoming.csv", header=True, inferSchema=True)
+
+(target.alias("tgt")
+ .merge(
+     source.alias("src"),
+     "tgt.emp_id = src.emp_id"     # match condition
+ )
+ .whenMatchedUpdateAll()            # UPDATE all columns when key matches
+ .whenNotMatchedInsertAll()         # INSERT full row when key is new
+ .execute()
+)
+```
+
+### Pattern 2 — Selective column update
+
+```python
+(target.alias("tgt")
+ .merge(source.alias("src"), "tgt.emp_id = src.emp_id")
+ .whenMatchedUpdate(set={
+     "salary":     "src.salary",
+     "department": "src.department",
+     "updated_at": "current_date()"
+ })
+ .whenNotMatchedInsertAll()
+ .execute()
+)
+```
+Only `salary`, `department`, and `updated_at` are overwritten — other columns stay unchanged.
+
+### Pattern 3 — CDC in one MERGE (I / U / D)
+
+```python
+(target.alias("tgt")
+ .merge(cdc_df.alias("src"), "tgt.order_id = src.order_id")
+ .whenMatchedDelete(condition="src.cdc_op = 'D'")         # delete if D
+ .whenMatchedUpdateAll(condition="src.cdc_op = 'U'")      # update if U
+ .whenNotMatchedInsertAll(condition="src.cdc_op = 'I'")   # insert if I
+ .execute()
+)
+```
+All three operations happen atomically in a single pass — no separate filter/rewrite steps.
+
+### Pattern 4 — SCD Type 2 with Delta (two steps)
+
+```python
+# Step 1 — close old versions of changed rows
+(target.alias("tgt")
+ .merge(
+     source.alias("src"),
+     "tgt.emp_id = src.emp_id AND tgt.is_current = true"
+ )
+ .whenMatchedUpdate(set={
+     "effective_to": "'2024-05-31'",
+     "is_current":   "false"
+ })
+ .execute()
+)
+
+# Step 2 — append new versions
+new_versions = source \
+    .withColumn("effective_from", lit("2024-06-01")) \
+    .withColumn("effective_to",   lit("9999-12-31")) \
+    .withColumn("is_current",     lit(True))
+
+new_versions.write.format("delta").mode("append").save(delta_path)
+```
+
+### Pattern 5 — Soft Delete with Delta MERGE
+
+```python
+ids_to_delete = spark.createDataFrame([("P002",), ("P005",)], ["product_id"])
+
+(target.alias("tgt")
+ .merge(ids_to_delete.alias("src"), "tgt.product_id = src.product_id")
+ .whenMatchedUpdate(set={
+     "is_deleted": "true",
+     "deleted_at": "current_date()"
+ })
+ .execute()
+)
+```
+No full table rewrite — only the matching rows' files are updated.
+
+### Pure PySpark vs Delta MERGE
+
+| Aspect | Pure PySpark (union) | Delta Lake MERGE |
+|---|---|---|
+| Atomicity | No — partial writes possible | Yes — full ACID transaction |
+| Concurrency | No — concurrent writes corrupt data | Yes — optimistic concurrency |
+| Performance | Rewrites all touched partitions | Rewrites only affected files |
+| DELETE support | Manual filter + rewrite | `whenMatchedDelete()` |
+| Setup needed | None | `delta-spark` package + session config |
+| Best for | Learning / no Delta available | Production pipelines |
+
+### whenMatched / whenNotMatched clauses
+
+| Clause | Fires when | Common use |
+|---|---|---|
+| `whenMatchedUpdateAll()` | Key exists in both | Full row update |
+| `whenMatchedUpdate(set={})` | Key exists in both | Selective column update |
+| `whenMatchedDelete()` | Key exists in both | CDC delete, soft-delete flip |
+| `whenNotMatchedInsertAll()` | Key only in source | New row insert |
+| `whenNotMatchedInsert(values={})` | Key only in source | Insert with transformations |
+| `whenNotMatchedBySourceDelete()` | Key only in target | Delete rows not in source (full sync) |
+
+---
+
+## 7. Pattern Comparison
 
 | Pattern | When to use | History kept? | Rows in output |
 |---|---|---|---|
@@ -317,7 +466,7 @@ Equivalent to Strategy 1 but uses groupBy instead of a window.
 
 ---
 
-## 7. Quick Reference
+## 8. Quick Reference
 
 ### Join types used in DE patterns
 

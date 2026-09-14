@@ -192,21 +192,57 @@ Full pipeline simulation:
 
 ---
 
-## Section 7 — Analytical Queries on Patterns
+## Section 7 — Delta Lake MERGE
 
-**Problem 31**
+**Problem 36**
+Write the SparkSession configuration needed to enable Delta Lake extensions.
+What two `.config()` keys must be set?
+
+**Problem 37**
+Write the Delta MERGE statement to perform a basic UPSERT on an `employees` Delta table.
+Match on `emp_id`. Update all columns when matched, insert all when not matched.
+
+**Problem 38**
+Write a Delta MERGE that only updates `salary` and `department` for matching rows.
+All other columns should remain unchanged.
+*(Use `whenMatchedUpdate(set={...})` instead of `whenMatchedUpdateAll()`)*
+
+**Problem 39**
+Write a Delta MERGE that applies a CDC log (with `cdc_op` column) in one operation:
+- `cdc_op = 'I'` → insert
+- `cdc_op = 'U'` → update all columns
+- `cdc_op = 'D'` → delete the row
+
+**Problem 40**
+Write a Delta MERGE for SCD Type 2 — Step 1 only:
+Close old versions of changed rows by setting `effective_to = '2024-05-31'` and `is_current = false`.
+The merge condition must match on `emp_id` AND `is_current = true` (to only close active rows).
+
+**Problem 41**
+Write a Delta MERGE to soft-delete products P002 and P005:
+Set `is_deleted = true` and `deleted_at = current_date()` for matching product_ids.
+
+**Problem 42**
+Compare: what happens if two jobs run the pure PySpark UPSERT (union approach) at the same time
+on the same output path? What happens with Delta MERGE? Why is Delta safer?
+
+---
+
+## Section 8 — Analytical Queries on Patterns
+
+**Problem 43**
 After the UPSERT from Problem 1, group by `department` and count employees per department.
 Which department has the most employees?
 
-**Problem 32**
+**Problem 44**
 After applying SCD2, find the average salary for active employees vs closed (historical) employees.
 *(Group by is_current, aggregate avg of salary)*
 
-**Problem 33**
+**Problem 45**
 From the CDC orders log, calculate the total `amount` of orders that are currently active (not deleted).
 Also show total amount of deleted orders.
 
-**Problem 34**
+**Problem 46**
 From `employees_current.csv`, add a column `salary_band`:
 - `"Junior"` if salary < 70000
 - `"Mid"` if salary 70000–89999
@@ -215,7 +251,7 @@ From `employees_current.csv`, add a column `salary_band`:
 Then soft-delete all `"Junior"` employees (is_active = False).
 Show the count per salary_band after the soft delete.
 
-**Problem 35**
+**Problem 47**
 After the SCD2 operation, write a query that shows for each employee:
 - emp_id
 - emp_name
