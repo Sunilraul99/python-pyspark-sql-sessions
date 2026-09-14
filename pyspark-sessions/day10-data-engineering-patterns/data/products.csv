@@ -1,0 +1,11 @@
+product_id,product_name,category,price,is_deleted,deleted_at
+P001,Laptop Pro,Electronics,75000,false,
+P002,Wireless Mouse,Accessories,1500,false,
+P003,USB-C Hub,Accessories,2800,false,
+P004,Old Monitor,Electronics,18000,true,2024-03-15
+P005,Mechanical Keyboard,Accessories,4500,false,
+P006,Webcam HD,Accessories,3200,false,
+P007,Discontinued Tablet,Electronics,22000,true,2024-02-10
+P008,Smart TV 55,Electronics,55000,false,
+P009,Legacy Printer,Accessories,8000,true,2024-04-01
+P010,Noise Cancelling Headphones,Accessories,12000,false,

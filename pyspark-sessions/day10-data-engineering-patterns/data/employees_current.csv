@@ -1,0 +1,11 @@
+emp_id,emp_name,department,salary,city,is_active,updated_at
+E001,Amit Sharma,Engineering,95000,Mumbai,true,2024-01-10
+E002,Priya Patel,Marketing,72000,Delhi,true,2024-01-10
+E003,Ravi Kumar,Engineering,88000,Bangalore,true,2024-01-10
+E004,Sneha Joshi,HR,65000,Pune,true,2024-01-10
+E005,Karan Mehta,Sales,78000,Mumbai,true,2024-01-10
+E006,Neha Singh,Engineering,91000,Delhi,true,2024-01-10
+E007,Arjun Rao,Finance,82000,Hyderabad,true,2024-01-10
+E008,Divya Nair,Marketing,68000,Chennai,true,2024-01-10
+E009,Vikram Gupta,Sales,74000,Bangalore,true,2024-01-10
+E010,Pooja Shah,HR,62000,Mumbai,true,2024-01-10

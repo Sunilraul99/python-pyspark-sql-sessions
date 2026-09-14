@@ -1,0 +1,7 @@
+emp_id,emp_name,department,salary,city,updated_at
+E001,Amit Sharma,Engineering,105000,Mumbai,2024-06-01
+E003,Ravi Kumar,Data Engineering,95000,Bangalore,2024-06-01
+E005,Karan Mehta,Sales,78000,Mumbai,2024-06-01
+E007,Arjun Rao,Finance,92000,Hyderabad,2024-06-01
+E011,Rahul Verma,Engineering,87000,Delhi,2024-06-01
+E012,Ananya Das,Marketing,71000,Kolkata,2024-06-01

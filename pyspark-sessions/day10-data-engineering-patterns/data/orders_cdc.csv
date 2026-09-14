@@ -1,0 +1,15 @@
+order_id,customer_id,product,amount,status,cdc_op,cdc_ts
+O001,C01,Laptop,55000,delivered,I,2024-01-05 10:00:00
+O002,C02,Phone,28000,processing,I,2024-01-06 11:00:00
+O003,C03,Tablet,22000,delivered,I,2024-01-07 09:00:00
+O004,C04,Headphones,5000,pending,I,2024-01-08 14:00:00
+O005,C05,Laptop,62000,processing,I,2024-01-09 16:00:00
+O001,C01,Laptop,55000,returned,U,2024-01-12 08:00:00
+O002,C02,Phone,28000,delivered,U,2024-01-13 10:00:00
+O004,C04,Headphones,5000,cancelled,U,2024-01-14 12:00:00
+O003,C03,Tablet,22000,returned,D,2024-01-15 09:30:00
+O006,C06,Smart TV,35000,processing,I,2024-01-16 15:00:00
+O005,C05,Laptop,62000,delivered,U,2024-01-17 11:00:00
+O007,C07,Camera,18000,pending,I,2024-01-18 13:00:00
+O002,C02,Phone,28000,returned,D,2024-01-19 09:00:00
+O006,C06,Smart TV,35000,delivered,U,2024-01-20 14:00:00
